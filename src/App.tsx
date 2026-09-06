@@ -5,6 +5,11 @@ import { design, type DesignInput, type DesignResult } from './kernel/pipeline'
 import { runSelfTest, type SelfTestItem } from './kernel/selftest'
 import { appendHistory, clearHistory, loadHistory, type HistoryEntry } from './kernel/history'
 import { hexToBytes, parseFrame, bytesToHex, buildSlabParamFrame } from './kernel/protocol'
+import { SlabDiagram } from './components/SlabDiagram'
+import { CalculationBookPanel, CalculationBookPrintView } from './components/CalculationBookView'
+import { COPYRIGHT, CopyrightDialog } from './components/CopyrightDialog'
+
+const GITHUB_REPO = 'https://github.com/iCxin/ribbed-floor-web'
 
 /* ------------------------------ 主题切换 ------------------------------ */
 
@@ -34,7 +39,7 @@ const DEFAULT_INPUT: DesignInput = {
   ratio: 0.004, deadKPa: 3, liveKPa: 2.5, duration: 3,
 }
 
-type RightTab = 'report' | 'selftest' | 'history' | 'frame'
+type RightTab = 'report' | 'book' | 'selftest' | 'history' | 'frame'
 
 function App() {
   const [input, setInput] = useState<DesignInput>(DEFAULT_INPUT)
@@ -46,6 +51,7 @@ function App() {
   const [frameText, setFrameText] = useState('')
   const [frameResult, setFrameResult] = useState<string | null>(null)
   const [frameError, setFrameError] = useState<string | null>(null)
+  const [copyrightOpen, setCopyrightOpen] = useState(false)
 
   const set = <K extends keyof DesignInput>(key: K, value: DesignInput[K]) =>
     setInput((prev) => ({ ...prev, [key]: value }))
@@ -118,7 +124,7 @@ function App() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur print:hidden">
         <div className="mx-auto flex h-[60px] max-w-6xl items-center gap-3 px-4 sm:px-6">
           <svg className="h-[26px] w-[26px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 21h18" /><path d="M5 21V7l7-4 7 4v14" /><path d="M9 21v-6h6v6" /><path d="M9 11h.01M15 11h.01" />
@@ -127,13 +133,26 @@ function App() {
             <h1 className="truncate text-[15px] font-semibold tracking-tight">水工钢筋混凝土肋形楼盖辅助设计系统</h1>
             <p className="text-[11px] text-muted-foreground">Hydraulic Ribbed-Floor Slab Auxiliary Design System · SL 191-2008 / GB 50010-2010</p>
           </div>
+          <button
+            onClick={() => setCopyrightOpen(true)}
+            className="hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
+            title="查看软件著作权登记证书"
+          >
+            © {new Date().getFullYear()} {COPYRIGHT.owner} · 软著 {COPYRIGHT.registrationNo}
+          </button>
           <Badge variant="secondary" className="font-tabular">v1.0</Badge>
           <Badge>纯前端</Badge>
+          <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" title="GitHub 开源仓库" aria-label="GitHub 开源仓库"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-accent">
+            <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.53-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.04.77 2.1 0 1.52-.01 2.74-.01 3.11 0 .3.2.67.8.55A11.52 11.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
+            </svg>
+          </a>
           <ThemeToggle />
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 print:hidden">
         <div className="grid items-start gap-5 lg:grid-cols-[360px_1fr]">
           {/* -------------- 参数输入 -------------- */}
           <Card>
@@ -219,6 +238,7 @@ function App() {
               <Tabs
                 items={[
                   { value: 'report', label: '计算报告' },
+                  { value: 'book', label: '计算书' },
                   { value: 'selftest', label: '内核自检' },
                   { value: 'history', label: '设计记录' },
                   { value: 'frame', label: '协议帧工具' },
@@ -232,8 +252,7 @@ function App() {
             </div>
 
             {/* ---------- 计算报告 ---------- */}
-            {tab === 'report' && (
-              <Card className="animate-in">
+            {tab === 'report' && (              <Card className="animate-in">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>计算报告</CardTitle>
@@ -260,6 +279,20 @@ function App() {
                         <Stat label="跨中弯矩 X / Y" value={`${fmt(result.calc.midX)} / ${fmt(result.calc.midY)}`} />
                         <Stat label="支座弯矩 X / Y" value={`${fmt(result.calc.supX)} / ${fmt(result.calc.supY)}`} />
                         <Stat label="支座剪力" value={fmt(result.calc.shear)} unit="kN/m" />
+                      </div>
+
+                      <div>
+                        <SectionTitle title="结构简图" tag="STRUCTURE DIAGRAM" />
+                        <div className="rounded-lg border bg-card p-3">
+                          <SlabDiagram
+                            spanM={result.input.spanM}
+                            widthM={result.input.widthM}
+                            meshNx={result.calc.meshNx}
+                            meshNy={result.calc.meshNy}
+                            slabType={result.input.slabType}
+                            thicknessMm={result.input.thicknessMm}
+                          />
+                        </div>
                       </div>
 
                       <div>
@@ -318,6 +351,11 @@ function App() {
                   )}
                 </CardContent>
               </Card>
+            )}
+
+            {/* ---------- 计算书 ---------- */}
+            {tab === 'book' && result && (
+              <CalculationBookPanel result={result} />
             )}
 
             {/* ---------- 内核自检 ---------- */}
@@ -452,9 +490,28 @@ function App() {
         </div>
       </main>
 
-      <footer className="mx-auto max-w-6xl px-4 pb-10 pt-2 text-center text-[11.5px] text-muted-foreground sm:px-6">
-        本地计算内核 · 计算结果须经注册结构工程师复核后方可用于施工
+      <footer className="mx-auto max-w-6xl px-4 pb-10 pt-2 text-center text-[11.5px] text-muted-foreground sm:px-6 print:hidden">
+        <div className="space-y-1">
+          <p>
+            本地计算内核<span className="mx-2 opacity-50">·</span>
+            计算结果须经注册结构工程师复核后方可用于施工
+          </p>
+          <p>
+            © {new Date().getFullYear()} {COPYRIGHT.owner} ｜{' '}
+            <button onClick={() => setCopyrightOpen(true)} className="underline decoration-dotted underline-offset-2 hover:text-foreground">
+              计算机软件著作权登记证书（{COPYRIGHT.registrationNo}）
+            </button>{' '}
+            ｜{' '}
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted underline-offset-2 hover:text-foreground">
+              GitHub 开源
+            </a>
+          </p>
+        </div>
       </footer>
+
+      <CopyrightDialog open={copyrightOpen} onClose={() => setCopyrightOpen(false)} />
+      {/* 打印时仅输出计算书 */}
+      <CalculationBookPrintView result={result} />
     </div>
   )
 }

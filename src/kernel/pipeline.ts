@@ -70,6 +70,7 @@ export interface DesignResult {
     spanM: number; widthM: number; thicknessMm: number
     ratio: number; slabType: 0 | 1
     deadKPa: number; liveKPa: number; aspectRatio: number
+    duration: number
   }
   calc: {
     meshNx: number; meshNy: number; totalDofs: number
@@ -107,6 +108,7 @@ export function design(input: DesignInput): DesignResult {
         ratio: input.ratio, slabType: input.slabType,
         deadKPa: input.deadKPa, liveKPa: input.liveKPa,
         aspectRatio: input.spanM / input.widthM,
+        duration: input.duration,
       },
       opt: null!, calc: null!, frameHex: '', paramFrameHex: '',
     }
@@ -192,6 +194,7 @@ export function design(input: DesignInput): DesignResult {
       ratio: input.ratio, slabType: input.slabType,
       deadKPa: input.deadKPa, liveKPa: input.liveKPa,
       aspectRatio: input.spanM / input.widthM,
+      duration: input.duration,
     },
     calc: {
       meshNx: calc.meshNx, meshNy: calc.meshNy, totalDofs: calc.totalDofs,
