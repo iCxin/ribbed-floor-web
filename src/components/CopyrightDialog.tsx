@@ -41,7 +41,7 @@ export function CopyrightDialog({ open, onClose }: { open: boolean; onClose: () 
           <img
             src="/soft-copyright.jpg"
             alt="计算机软件著作权登记证书"
-            className="mx-auto max-h-[76vh] w-auto rounded-md"
+            className="mx-auto max-h-[76vh] w-auto max-w-full rounded-md"
             loading="lazy"
           />
         </div>

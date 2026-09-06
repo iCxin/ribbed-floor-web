@@ -25,9 +25,9 @@ TypeScript，无需服务器、无需安装，打开网页即可完成 FEM 内�
 
 ## 截图
 
-| 计算报告 | 计算书 |
-| --- | --- |
-| ![计算报告](docs/screenshot-report.png) | ![计算书](docs/screenshot-calcbook.png) |
+| 计算报告 | 计算书 | 移动端 |
+| --- | --- | --- |
+| ![计算报告](docs/screenshot-report.png) | ![计算书](docs/screenshot-calcbook.png) | ![移动端](docs/screenshot-mobile.png) |
 
 ## 功能
 
@@ -40,6 +40,8 @@ TypeScript，无需服务器、无需安装，打开网页即可完成 FEM 内�
   FEM 与 Timoshenko 简支板解析解对比、承载力公式往返、端到端流水线
 - **设计记录** —— localStorage 存档（最近 50 条循环覆盖），可一键载入重算
 - **协议帧工具** —— 粘贴十六进制参数帧直接走解析流水线（与硬件接口等价路径）
+- **响应式布局** —— 桌面双栏 / 移动单栏自适应，页签横向滚动，数据卡随视口收缩，
+  计算完成后自动滚动至结果区
 - **亮 / 暗双主题** —— shadcn/ui 风格（zinc 色板），跟随系统并持久化
 
 ## 一键部署（腾讯云 EdgeOne Pages）

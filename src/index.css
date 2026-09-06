@@ -72,6 +72,19 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* 数据卡网格：轨道最小值取 0，允许窄屏收缩（Tailwind grid-cols-* 的轨道
+   最小值为 auto，长内容会把 min-content 撑爆容器） */
+.kv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+@media (min-width: 640px) {
+  .kv-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .animate-in {
   animation: fade-up 0.3s ease both;
 }

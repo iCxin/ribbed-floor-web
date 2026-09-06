@@ -62,6 +62,12 @@ function App() {
       const r = design(data)
       setResult(r)
       setRunning(false)
+      // 移动端：计算完成后滚动到结果区
+      if (window.innerWidth < 1024) {
+        requestAnimationFrame(() => {
+          document.getElementById('result-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        })
+      }
       if (r.ok) {
         const entry: HistoryEntry = {
           designNumber: r.designNumber,
@@ -124,23 +130,23 @@ function App() {
     <div className="min-h-screen">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur print:hidden">
-        <div className="mx-auto flex h-[60px] max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <svg className="h-[26px] w-[26px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-3 sm:h-[60px] sm:gap-3 sm:px-6">
+          <svg className="h-6 w-6 flex-none sm:h-[26px] sm:w-[26px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 21h18" /><path d="M5 21V7l7-4 7 4v14" /><path d="M9 21v-6h6v6" /><path d="M9 11h.01M15 11h.01" />
           </svg>
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-[15px] font-semibold tracking-tight">水工钢筋混凝土肋形楼盖辅助设计系统</h1>
-            <p className="text-[11px] text-muted-foreground">Hydraulic Ribbed-Floor Slab Auxiliary Design System · SL 191-2008 / GB 50010-2010</p>
+            <h1 className="truncate text-[13.5px] font-semibold tracking-tight sm:text-[15px]">水工钢筋混凝土肋形楼盖辅助设计系统</h1>
+            <p className="hidden text-[11px] text-muted-foreground sm:block">Hydraulic Ribbed-Floor Slab Auxiliary Design System · SL 191-2008 / GB 50010-2010</p>
           </div>
           <button
             onClick={() => setCopyrightOpen(true)}
-            className="hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
+            className="hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground md:inline-flex"
             title="查看软件著作权登记证书"
           >
             © 软件著作权
           </button>
-          <Badge variant="secondary" className="font-tabular">v1.0</Badge>
-          <Badge>纯前端</Badge>
+          <Badge variant="secondary" className="hidden font-tabular md:inline-flex">v1.0</Badge>
+          <Badge className="hidden md:inline-flex">纯前端</Badge>
           <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" title="GitHub 开源仓库" aria-label="GitHub 开源仓库"
             className="inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-accent">
             <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -152,9 +158,9 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 print:hidden">
-        <div className="grid items-start gap-5 lg:grid-cols-[360px_1fr]">
+        <div className="grid items-start gap-4 lg:grid-cols-[360px_1fr] lg:gap-5">
           {/* -------------- 参数输入 -------------- */}
-          <Card>
+          <Card className="min-w-0">
             <CardHeader>
               <CardTitle>设计参数</CardTitle>
               <CardDescription>全部计算在浏览器本地完成，参数经 0xAA55 协议帧送入计算内核。</CardDescription>
@@ -232,9 +238,11 @@ function App() {
           </Card>
 
           {/* -------------- 右侧面板 -------------- */}
-          <div className="space-y-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div id="result-panel" className="min-w-0 space-y-5 scroll-mt-16">
+            <div className="flex items-center justify-between gap-3">
+              <div className="w-0 min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <Tabs
+                className="w-max"
                 items={[
                   { value: 'report', label: '计算报告' },
                   { value: 'book', label: '计算书' },
@@ -245,6 +253,7 @@ function App() {
                 value={tab}
                 onValueChange={setTab}
               />
+              </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" disabled={running} onClick={runSelfTestCb}>运行自检</Button>
               </div>
@@ -270,8 +279,8 @@ function App() {
                     </div>
                   )}
                   {result?.ok && (
-                    <div className="space-y-5">
-                      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                    <div id="result-panel" className="min-w-0 space-y-5 scroll-mt-16">
+                      <div className="kv-grid">
                         <Stat label="混凝土强度等级" value={`C${result.input.grade}`} />
                         <Stat label="几何尺寸" value={`${fmt(result.input.spanM)} × ${fmt(result.input.widthM)}`} unit="m" />
                         <Stat label="板厚 / 类型" value={`${fmt(result.input.thicknessMm, 0)}`} unit={`mm ${result.input.slabType ? '双向板' : '单向板'}`} />
@@ -316,7 +325,7 @@ function App() {
 
                       <div>
                         <SectionTitle title="汇总" tag="SUMMARY" />
-                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                        <div className="kv-grid">
                           <Stat label="全截面配筋率" value={fmt(result.opt.totalRebarRatio * 100, 3)} unit="%" />
                           <Stat label="钢筋总用量" value={fmt(result.opt.steelWeightKg, 1)} unit="kg" />
                           <Stat label="安全储备 Mu/(K·M)" value={fmt(result.opt.safetyFactor)} />
@@ -505,9 +514,9 @@ function App() {
 
 function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
   return (
-    <div className="rounded-lg border p-3">
+    <div className="min-w-0 rounded-lg border p-3">
       <div className="mb-1 text-[11px] font-medium text-muted-foreground">{label}</div>
-      <div className="font-tabular text-[17px] font-semibold tracking-tight">
+      <div className="font-tabular break-words text-[15px] font-semibold tracking-tight sm:text-[17px]">
         {value}
         {unit && <span className="ml-1 text-[11px] font-normal text-muted-foreground">{unit}</span>}
       </div>

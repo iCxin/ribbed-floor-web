@@ -20,7 +20,7 @@ function BookBody({ book }: { book: CalculationBook }) {
                 <li key={sec.title + st.label} className="grid gap-0.5 border-b border-border/60 pb-2 last:border-0">
                   <div className="flex items-baseline justify-between gap-3">
                     <span className="text-[13px] font-medium">{st.label}</span>
-                    {st.note && <span className="flex-none text-[11px] text-muted-foreground">{st.note}</span>}
+                    {st.note && <span className="min-w-0 text-right text-[11px] text-muted-foreground">{st.note}</span>}
                   </div>
                   <div className="whitespace-pre-line font-tabular text-[12.5px] leading-relaxed text-foreground/90">
                     {st.formula}
