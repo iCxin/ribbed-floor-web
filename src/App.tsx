@@ -7,7 +7,7 @@ import { appendHistory, clearHistory, loadHistory, type HistoryEntry } from './k
 import { hexToBytes, parseFrame, bytesToHex, buildSlabParamFrame } from './kernel/protocol'
 import { SlabDiagram } from './components/SlabDiagram'
 import { CalculationBookPanel, CalculationBookPrintView } from './components/CalculationBookView'
-import { COPYRIGHT, CopyrightDialog } from './components/CopyrightDialog'
+import { CopyrightDialog } from './components/CopyrightDialog'
 
 const GITHUB_REPO = 'https://github.com/iCxin/ribbed-floor-web'
 
@@ -138,7 +138,7 @@ function App() {
             className="hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
             title="查看软件著作权登记证书"
           >
-            © {new Date().getFullYear()} {COPYRIGHT.owner} · 软著 {COPYRIGHT.registrationNo}
+            © 软件著作权
           </button>
           <Badge variant="secondary" className="font-tabular">v1.0</Badge>
           <Badge>纯前端</Badge>
@@ -497,9 +497,9 @@ function App() {
             计算结果须经注册结构工程师复核后方可用于施工
           </p>
           <p>
-            © {new Date().getFullYear()} {COPYRIGHT.owner} ｜{' '}
+            © 软件著作权{' '}
             <button onClick={() => setCopyrightOpen(true)} className="underline decoration-dotted underline-offset-2 hover:text-foreground">
-              计算机软件著作权登记证书（{COPYRIGHT.registrationNo}）
+              （点击查看登记证书）
             </button>{' '}
             ｜{' '}
             <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted underline-offset-2 hover:text-foreground">
