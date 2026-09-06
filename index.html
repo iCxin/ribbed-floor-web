@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="水工钢筋混凝土肋形楼盖辅助设计系统（纯前端版）：FEM 内力分析、挠度/裂缝验算与规范配筋优化，全部计算在浏览器本地完成。" />
+    <title>肋形楼盖辅助设计系统 · 纯前端版</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2318181b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 21h18'/%3E%3Cpath d='M5 21V7l7-4 7 4v14'/%3E%3Cpath d='M9 21v-6h6v6'/%3E%3Cpath d='M9 11h.01M15 11h.01'/%3E%3C/svg%3E" />
+    <script>
+      // 首帧前应用主题，避免闪烁
+      try {
+        const t = localStorage.getItem('rfds-theme');
+        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) { /* ignore */ }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
