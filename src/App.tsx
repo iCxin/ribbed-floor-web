@@ -5,7 +5,6 @@ import { design, type DesignInput, type DesignResult } from './kernel/pipeline'
 import { runSelfTest, type SelfTestItem } from './kernel/selftest'
 import { appendHistory, clearHistory, loadHistory, type HistoryEntry } from './kernel/history'
 import { hexToBytes, parseFrame, bytesToHex, buildSlabParamFrame } from './kernel/protocol'
-import { SlabDiagram } from './components/SlabDiagram'
 import { CalculationBookPanel, CalculationBookPrintView } from './components/CalculationBookView'
 import { CopyrightDialog } from './components/CopyrightDialog'
 
@@ -279,20 +278,6 @@ function App() {
                         <Stat label="跨中弯矩 X / Y" value={`${fmt(result.calc.midX)} / ${fmt(result.calc.midY)}`} />
                         <Stat label="支座弯矩 X / Y" value={`${fmt(result.calc.supX)} / ${fmt(result.calc.supY)}`} />
                         <Stat label="支座剪力" value={fmt(result.calc.shear)} unit="kN/m" />
-                      </div>
-
-                      <div>
-                        <SectionTitle title="结构简图" tag="STRUCTURE DIAGRAM" />
-                        <div className="rounded-lg border bg-card p-3">
-                          <SlabDiagram
-                            spanM={result.input.spanM}
-                            widthM={result.input.widthM}
-                            meshNx={result.calc.meshNx}
-                            meshNy={result.calc.meshNy}
-                            slabType={result.input.slabType}
-                            thicknessMm={result.input.thicknessMm}
-                          />
-                        </div>
                       </div>
 
                       <div>
